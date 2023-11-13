@@ -1,3 +1,3 @@
 # EnergyWise
 
-# Test hellos
+*Progressive Thinking towards Energy Efficiency*
