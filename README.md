@@ -1,10 +1,11 @@
 # EnergyWise
 
-*Progressive Thinking towards Energy Efficiency*
+_Progressive Thinking towards Energy Efficiency_
 
 final project dedicated to CSIT321/CSIT340/ES038.
 
 Project Contributors
+
 <ul>
 <li>Miguel Antonio T. Dakay</li>
 <li>Dave Francis B. Ondona</li>
@@ -12,4 +13,4 @@ Project Contributors
 <li>Adrian Sepulveda</li>
 <li>Felix II C. Vilocura</li>
 </ul>
-
+test
