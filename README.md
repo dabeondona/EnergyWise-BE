@@ -13,4 +13,3 @@ Project Contributors
 <li>Adrian Sepulveda</li>
 <li>Felix II C. Vilocura</li>
 </ul>
-ggh
