@@ -11,6 +11,3 @@ public class EnergywiseApplication {
 	}
 
 }
-
-// test pull request twice
-// thrice
