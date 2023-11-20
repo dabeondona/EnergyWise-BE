@@ -3,6 +3,7 @@ package com.energywise.energywise.Controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -16,12 +17,18 @@ import org.springframework.web.bind.annotation.RestController;
 import com.energywise.energywise.Entity.UserEntity;
 import com.energywise.energywise.Service.UserService;
 
+@CrossOrigin(origins = "http://localhost:3000")
 @RestController
 @RequestMapping("/user")
 public class UserController {
     
     @Autowired
     UserService userService;
+
+    @GetMapping("/print")
+    public String printHello() {
+        return "Hello, Mic Test!";
+    }
 
     @PostMapping("/insertUser")
     public UserEntity insertUser(@RequestBody UserEntity user) {
