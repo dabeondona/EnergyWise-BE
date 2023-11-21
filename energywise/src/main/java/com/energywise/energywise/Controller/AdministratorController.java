@@ -14,39 +14,39 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.energywise.energywise.Entity.UserEntity;
-import com.energywise.energywise.Service.UserService;
+import com.energywise.energywise.Entity.AdministratorEntity;
+import com.energywise.energywise.Service.AdministratorService;
 
 @CrossOrigin(origins = "http://localhost:3000")
 @RestController
-@RequestMapping("/user")
-public class UserController {
+@RequestMapping("/admin")
+public class AdministratorController {
     
     @Autowired
-    UserService userService;
+    AdministratorService adminService;
 
     @GetMapping("/print")
     public String printHello() {
         return "Hello, Mic Test!";
     }
 
-    @PostMapping("/insertUser")
-    public UserEntity insertUser(@RequestBody UserEntity user) {
-        return userService.insertUser(user);
+    @PostMapping("/insertAdmin")
+    public AdministratorEntity insertAdmin(@RequestBody AdministratorEntity admin) {
+        return adminService.insertAdmin(admin);
     }
 
-    @GetMapping("/getAllUsers")
-    public List<UserEntity> getAllUsers() {
-        return userService.getAllUsers();
+    @GetMapping("/getAllAdmins")
+    public List<AdministratorEntity> getAllAdmins() {
+        return adminService.getAllAdmins();
     }
 
-    @PutMapping("/updateUser")
-    public UserEntity updateUser(@RequestParam int user_id, @RequestBody UserEntity newUserDetails) {
-        return userService.updateUser(user_id, newUserDetails);
+    @PutMapping("/updateAdmin")
+    public AdministratorEntity updateAdmin(@RequestParam int admin_id, @RequestBody AdministratorEntity newAdminDetails) {
+        return adminService.updateAdmin(admin_id, newAdminDetails);
     }
 
-    @DeleteMapping("/deleteUser/{user_id}")
-    public String deleteUser(@PathVariable int user_id) {
-        return userService.deleteUser(user_id);
+    @DeleteMapping("/deleteAdmin/{admin_id}")
+    public String deleteAdmin(@PathVariable int admin_id) {
+        return adminService.deleteAdmin(admin_id);
     }
 }
