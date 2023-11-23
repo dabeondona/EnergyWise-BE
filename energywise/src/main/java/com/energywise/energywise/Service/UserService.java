@@ -1,6 +1,5 @@
 package com.energywise.energywise.Service;
 
-
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -12,7 +11,7 @@ import com.energywise.energywise.Repository.UserRepository;
 
 @Service
 public class UserService {
-    
+
     @Autowired
     UserRepository userRepo;
 
@@ -37,6 +36,7 @@ public class UserService {
             user.setFirstname(newUserDetails.getFirstname());
             user.setLastname(newUserDetails.getLastname());
             user.setPassword(newUserDetails.getPassword());
+            user.setEmail(newUserDetails.getEmail());
         } catch (NoSuchElementException e) {
             throw new NoSuchElementException("User " + user_id + " not found!");
         } finally {
@@ -48,7 +48,7 @@ public class UserService {
     public String deleteUser(int user_id) {
         String msg = "";
 
-        if(userRepo.findById(user_id) != null) {
+        if (userRepo.findById(user_id) != null) {
             userRepo.deleteById(user_id);
             msg = "User " + user_id + " is deleted!";
         } else {
