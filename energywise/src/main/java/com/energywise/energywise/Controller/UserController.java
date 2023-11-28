@@ -40,7 +40,7 @@ public class UserController {
         return userService.getAllUsers();
     }
 
-    @GetMapping("/getUserPicture")
+    @GetMapping("/getUserPicture") // TBC
     public String getPicture(@RequestParam int user_id) {
         return userService.getPicture(user_id);
     }
