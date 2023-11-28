@@ -32,7 +32,7 @@ public class UserEntity {
     private String email;
 
     @Column(name = "user_picture")
-    private String picture;
+    private String picture = "Placeholder picture here";
 
     @Column(name = "user_isDeleted")
     private boolean isDeleted;
