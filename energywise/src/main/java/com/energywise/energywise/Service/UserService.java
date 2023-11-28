@@ -2,6 +2,7 @@ package com.energywise.energywise.Service;
 
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -25,6 +26,17 @@ public class UserService {
         return userRepo.findAll();
     }
 
+    // R - GETTING PICTURE LINK
+    public String getPicture(int user_id) {
+        Optional<UserEntity> userOptional = userRepo.findById(user_id);
+
+        if (userOptional.isPresent()) {
+            return userOptional.get().getPicture();
+        } else {
+            throw new NoSuchElementException("User " + user_id + " not found!");
+        }
+    }
+
     // U - TO BE UTILIZED FOR THE SETTINGS PAGE
     @SuppressWarnings("finally")
     public UserEntity updateUser(int user_id, UserEntity newUserDetails) {
@@ -37,6 +49,8 @@ public class UserService {
             user.setLastname(newUserDetails.getLastname());
             user.setPassword(newUserDetails.getPassword());
             user.setEmail(newUserDetails.getEmail());
+            user.setPicture(newUserDetails.getPicture());
+            user.setDeleted(newUserDetails.isDeleted());
         } catch (NoSuchElementException e) {
             throw new NoSuchElementException("User " + user_id + " not found!");
         } finally {

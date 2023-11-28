@@ -31,17 +31,26 @@ public class UserEntity {
     @Column(name = "user_email")
     private String email;
 
+    @Column(name = "user_picture")
+    private String picture;
+
+    @Column(name = "user_isDeleted")
+    private boolean isDeleted;
+
     public UserEntity() {
         super();
     }
 
-    public UserEntity(int user_id, String username, String firstname, String lastname, String password, String email) {
+    public UserEntity(int user_id, String username, String firstname, String lastname, String password, String email,
+            String picture, boolean isDeleted) {
         this.user_id = user_id;
         this.username = username;
         this.firstname = firstname;
         this.lastname = lastname;
         this.password = password;
         this.email = email;
+        this.picture = picture;
+        this.isDeleted = isDeleted;
     }
 
     public int getUser_id() {
@@ -90,6 +99,22 @@ public class UserEntity {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String getPicture() {
+        return picture;
+    }
+
+    public void setPicture(String picture) {
+        this.picture = picture;
+    }
+
+    public boolean isDeleted() {
+        return isDeleted;
+    }
+
+    public void setDeleted(boolean isDeleted) {
+        this.isDeleted = isDeleted;
     }
 
 }

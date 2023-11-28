@@ -21,7 +21,7 @@ import com.energywise.energywise.Service.UserService;
 @RestController
 @RequestMapping("/user")
 public class UserController {
-    
+
     @Autowired
     UserService userService;
 
@@ -38,6 +38,11 @@ public class UserController {
     @GetMapping("/getAllUsers")
     public List<UserEntity> getAllUsers() {
         return userService.getAllUsers();
+    }
+
+    @GetMapping("/getUserPicture")
+    public String getPicture(@RequestParam int user_id) {
+        return userService.getPicture(user_id);
     }
 
     @PutMapping("/updateUser")
