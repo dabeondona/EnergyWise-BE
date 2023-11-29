@@ -3,6 +3,8 @@ package com.energywise.energywise.Controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -30,9 +32,38 @@ public class UserController {
         return "Hello, Mic Test!";
     }
 
+    @PostMapping("/login")
+    public ResponseEntity<?> loginUser(@RequestBody LoginDto loginDto) {
+        boolean isValidUser = userService.validateUser(loginDto.getUsername(), loginDto.getPassword());
+        if (isValidUser) {
+            return ResponseEntity.ok().body("User authenticated successfully");
+        } else {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials");
+        }
+    }
+
     @PostMapping("/insertUser")
-    public UserEntity insertUser(@RequestBody UserEntity user) {
-        return userService.insertUser(user);
+    public ResponseEntity<?> insertUser(@RequestBody UserRegistrationDto registrationDto) {
+        UserEntity user = new UserEntity();
+        user.setUsername(registrationDto.getUsername());
+        user.setPassword(registrationDto.getPassword());
+        user.setEmail(registrationDto.getEmail());
+        user.setFirstname(registrationDto.getFirstname());
+        user.setLastname(registrationDto.getLastname());
+
+        UserEntity savedUser = userService.insertUser(user);
+
+        UserDto userDto = mapToUserDto(savedUser);
+
+        return new ResponseEntity<>(userDto, HttpStatus.CREATED);
+    }
+
+    private UserDto mapToUserDto(UserEntity user) {
+        UserDto userDto = new UserDto();
+        userDto.setUsername(user.getUsername());
+        userDto.setEmail(user.getEmail());
+
+        return userDto;
     }
 
     @GetMapping("/getAllUsers")

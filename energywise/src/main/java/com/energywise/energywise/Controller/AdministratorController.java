@@ -21,7 +21,7 @@ import com.energywise.energywise.Service.AdministratorService;
 @RestController
 @RequestMapping("/admin")
 public class AdministratorController {
-    
+
     @Autowired
     AdministratorService adminService;
 
@@ -41,7 +41,8 @@ public class AdministratorController {
     }
 
     @PutMapping("/updateAdmin")
-    public AdministratorEntity updateAdmin(@RequestParam int admin_id, @RequestBody AdministratorEntity newAdminDetails) {
+    public AdministratorEntity updateAdmin(@RequestParam int admin_id,
+            @RequestBody AdministratorEntity newAdminDetails) {
         return adminService.updateAdmin(admin_id, newAdminDetails);
     }
 
