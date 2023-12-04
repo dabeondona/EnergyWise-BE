@@ -19,7 +19,7 @@ import com.energywise.energywise.Service.RateService;
 
 @CrossOrigin(origins = "http://localhost:3000")
 @RestController
-@RequestMapping("/admin")
+@RequestMapping("/rate")
 public class RateController {
 
     @Autowired
