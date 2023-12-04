@@ -25,11 +25,20 @@ public class ContactEntity {
     @Column(name = "contact_message")
     private String contact_message;
 
-    public ContactEntity(int contact_id, String contact_name, String contact_email, String contact_message) {
+    @Column(name = "contact_isDeleted")
+    private boolean isDeleted;
+
+    public ContactEntity() {
+        super();
+    }
+
+    public ContactEntity(int contact_id, String contact_name, String contact_email, String contact_message,
+            boolean isDeleted) {
         this.contact_id = contact_id;
         this.contact_name = contact_name;
         this.contact_email = contact_email;
         this.contact_message = contact_message;
+        this.isDeleted = isDeleted;
     }
 
     public int getContact_id() {
@@ -62,6 +71,14 @@ public class ContactEntity {
 
     public void setContact_message(String contact_message) {
         this.contact_message = contact_message;
+    }
+
+    public boolean isDeleted() {
+        return isDeleted;
+    }
+
+    public void setDeleted(boolean isDeleted) {
+        this.isDeleted = isDeleted;
     }
 
 }

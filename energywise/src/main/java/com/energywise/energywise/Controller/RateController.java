@@ -14,40 +14,39 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.energywise.energywise.Entity.ContactEntity;
-import com.energywise.energywise.Service.ContactService;
+import com.energywise.energywise.Entity.RateEntity;
+import com.energywise.energywise.Service.RateService;
 
 @CrossOrigin(origins = "http://localhost:3000")
 @RestController
-@RequestMapping("/contact")
-public class ContactController {
+@RequestMapping("/admin")
+public class RateController {
 
     @Autowired
-    ContactService cService;
+    RateService rService;
 
     @GetMapping("/print")
     public String printHello() {
         return "Hello, Mic Test!";
     }
 
-    @PostMapping("/insertMsg")
-    public ContactEntity insertMsg(@RequestBody ContactEntity msg) {
-        return cService.insertMessage(msg);
+    @PostMapping("/insertRate")
+    public RateEntity insertRate(@RequestBody RateEntity rate) {
+        return rService.insertRate(rate);
     }
 
-    @GetMapping("/getAllMsgs")
-    public List<ContactEntity> getAllMsgs() {
-        return cService.getAllMsgs();
+    @GetMapping("/getAllRates")
+    public List<RateEntity> getAllRates() {
+        return rService.getAllRates();
     }
 
-    @PutMapping("/updateContact")
-    public ContactEntity updateContact(@RequestParam int contact_id, @RequestBody ContactEntity newContactDetails) {
-        return cService.updateContact(contact_id, newContactDetails);
+    @PutMapping("/updateRate")
+    public RateEntity updateRate(@RequestParam int rate_id, @RequestBody RateEntity newRateDetails) {
+        return rService.updateRate(rate_id, newRateDetails);
     }
 
-    @DeleteMapping("/deleteContact/{contact_id}")
-    public String deleteContact(@PathVariable int contact_id) {
-        return cService.deleteContact(contact_id);
+    @DeleteMapping("/deleteRate/{rate_id}")
+    public String deleteRate(@PathVariable int rate_id) {
+        return rService.deleteRate(rate_id);
     }
-
 }
