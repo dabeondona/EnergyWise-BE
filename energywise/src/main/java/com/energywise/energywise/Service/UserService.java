@@ -38,6 +38,11 @@ public class UserService {
     }
 
     // R
+    public UserEntity findUserByUsername(String username) {
+        return userRepo.findByUsername(username);
+    }
+
+    // R
     public List<UserEntity> getAllUsers() {
         return userRepo.findAll();
     }

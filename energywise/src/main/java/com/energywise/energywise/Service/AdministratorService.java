@@ -11,7 +11,7 @@ import com.energywise.energywise.Repository.AdministratorRepository;
 
 @Service
 public class AdministratorService {
-    
+
     @Autowired
     AdministratorRepository adminRepo;
 
@@ -25,7 +25,7 @@ public class AdministratorService {
         return adminRepo.findAll();
     }
 
-    // U 
+    // U
     @SuppressWarnings("finally")
     public AdministratorEntity updateAdmin(int admin_id, AdministratorEntity newAdminDetails) {
         AdministratorEntity admin = new AdministratorEntity();
@@ -36,6 +36,7 @@ public class AdministratorService {
             admin.setFirstname(newAdminDetails.getFirstname());
             admin.setLastname(newAdminDetails.getLastname());
             admin.setPassword(newAdminDetails.getPassword());
+            admin.setDeleted(newAdminDetails.isDeleted());
         } catch (NoSuchElementException e) {
             throw new NoSuchElementException("Admin " + admin_id + " not found!");
         } finally {
@@ -47,7 +48,7 @@ public class AdministratorService {
     public String deleteAdmin(int admin_id) {
         String msg = "";
 
-        if(adminRepo.findById(admin_id) != null) {
+        if (adminRepo.findById(admin_id) != null) {
             adminRepo.deleteById(admin_id);
             msg = "Admin " + admin_id + " is deleted!";
         } else {

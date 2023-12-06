@@ -58,11 +58,23 @@ public class UserController {
         return new ResponseEntity<>(userDto, HttpStatus.CREATED);
     }
 
+    @GetMapping("/getUserDetails")
+    public ResponseEntity<?> getUserDetails(@RequestParam String username) {
+        UserEntity user = userService.findUserByUsername(username);
+        if (user != null) {
+            UserDto userDto = mapToUserDto(user);
+            return ResponseEntity.ok(userDto);
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
+        }
+    }
+
     private UserDto mapToUserDto(UserEntity user) {
         UserDto userDto = new UserDto();
         userDto.setUsername(user.getUsername());
+        userDto.setFirstName(user.getFirstname());
+        userDto.setLastName(user.getLastname());
         userDto.setEmail(user.getEmail());
-
         return userDto;
     }
 
