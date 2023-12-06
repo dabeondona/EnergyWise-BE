@@ -10,7 +10,7 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "tbladmin")
 public class AdministratorEntity {
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "admin_id")
@@ -28,16 +28,21 @@ public class AdministratorEntity {
     @Column(name = "admin_password")
     private String password;
 
+    @Column(name = "admin_isDeleted")
+    private boolean isDeleted;
+
     public AdministratorEntity() {
         super();
     }
 
-    public AdministratorEntity(int admin_id, String username, String firstname, String lastname, String password) {
+    public AdministratorEntity(int admin_id, String username, String firstname, String lastname, String password,
+            boolean isDeleted) {
         this.admin_id = admin_id;
         this.username = username;
         this.firstname = firstname;
         this.lastname = lastname;
         this.password = password;
+        this.isDeleted = isDeleted;
     }
 
     public int getAdmin_id() {
@@ -78,6 +83,14 @@ public class AdministratorEntity {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public boolean isDeleted() {
+        return isDeleted;
+    }
+
+    public void setDeleted(boolean isDeleted) {
+        this.isDeleted = isDeleted;
     }
 
 }
