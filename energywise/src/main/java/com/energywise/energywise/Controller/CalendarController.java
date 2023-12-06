@@ -1,70 +1,49 @@
 package com.energywise.energywise.Controller;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
+@RestController
+@RequestMapping("/api/calendar")
 public class CalendarController {
-    private List<Event> events;
 
-    public CalendarController() {
-        this.events = new ArrayList<>();
+    private final List<Calendar> events = new ArrayList<>();
+
+    @PostMapping("/create")
+    public ResponseEntity<String> createEvent(@RequestBody Calendar event) {
+        events.add(event); // Corrected method name to 'events.add'
+        return new ResponseEntity<>("Event created successfully", HttpStatus.CREATED);
     }
 
-    public void createEvent(String title, String description, boolean recurring, RecurrenceType recurrenceType) {
-        Event event = new Event(title, description, recurring, recurrenceType);
-        events.add(event);
-        // Add any additional logic you may need
-    }
+    @PutMapping("/update/{eventId}")
+    public ResponseEntity<String> updateEvent(@PathVariable Long eventId, @RequestBody Calendar updatedEvent) {
+        Calendar existingEvent = findEventById(eventId);
 
-    public void updateEvent(int eventId, String newTitle, String newDescription) {
-        Event event = events.get(eventId);
-        if (event != null) {
-            event.setTitle(newTitle);
-            event.setDescription(newDescription);
-            // Add any additional logic you may need
+        if (existingEvent != null) {
+            // Update the event time
+            existingEvent.setTime(updatedEvent.getTime());
+
+            return new ResponseEntity<>("Event updated successfully", HttpStatus.OK);
         } else {
-            // Handle the case where the event with the given ID is not found
+            return new ResponseEntity<>("Event not found", HttpStatus.NOT_FOUND);
         }
     }
 
-    // Add more methods as needed
-
-    private static class Event {
-        private String title;
-        private String description;
-        private boolean recurring;
-        private RecurrenceType recurrenceType;
-
-        public Event(String title, String description, boolean recurring, RecurrenceType recurrenceType) {
-            this.title = title;
-            this.description = description;
-            this.recurring = recurring;
-            this.recurrenceType = recurrenceType;
-        }
-
-        public String getTitle() {
-            return title;
-        }
-
-        public void setTitle(String title) {
-            this.title = title;
-        }
-
-        public String getDescription() {
-            return description;
-        }
-
-        public void setDescription(String description) {
-            this.description = description;
-        }
-
-        // Add getters and setters for other fields as needed
+    @PostMapping("/createRecurring")
+    public ResponseEntity<String> createRecurringEvent(@RequestBody Calendar recurringEvent) {
+        events.add(recurringEvent); // Corrected method name to 'events.add'
+        return new ResponseEntity<>("Recurring event created successfully", HttpStatus.CREATED);
     }
 
-    public enum RecurrenceType {
-        DAILY,
-        WEEKLY,
-        MONTHLY,
-        YEARLY
+    private Calendar findEventById(Long eventId) {
+        return events.stream()
+                .filter(event -> event.getCalendarType().equals(eventId)) // Corrected method to get eventId
+                .findFirst()
+                .orElse(null);
     }
 }
