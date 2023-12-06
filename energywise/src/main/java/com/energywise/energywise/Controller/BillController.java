@@ -3,29 +3,68 @@ package com.energywise.energywise.Controller;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+@RequestMapping("/api/bill")
 public class BillController {
-    private List<User> users;
 
-    public BillController() {
-        this.users = new ArrayList<>();
+    private final List<User> users = new ArrayList<>();
+
+    @PostMapping("/create")
+    public ResponseEntity<String> createBill(@RequestBody User user) {
+        users.add(user);
+        return new ResponseEntity<>("Bill created successfully", HttpStatus.CREATED);
     }
 
-    public void notifyUpcomingPayment(User user) {
-        // Logic to send notification for upcoming payment to the user
+    @PutMapping("/update/{userId}")
+    public ResponseEntity<String> updateBill(@PathVariable Long userId, @RequestBody User updatedUser) {
+        User existingUser = findUserById(userId);
+
+        if (existingUser != null) {
+            return new ResponseEntity<>("Bill updated successfully", HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>("Bill not found", HttpStatus.NOT_FOUND);
+        }
     }
 
-    public void notifyFailedTransaction(User user) {
-        // Logic to send notification for a failed transaction to the user
+    @DeleteMapping("/delete/{userId}")
+    public ResponseEntity<String> deleteBill(@PathVariable Long userId) {
+        User existingUser = findUserById(userId);
+
+        if (existingUser != null) {
+            users.remove(existingUser);
+            return new ResponseEntity<>("Bill deleted successfully", HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>("Bill not found", HttpStatus.NOT_FOUND);
+        }
     }
 
-    public void notifySuccessfulRenewal(User user) {
-        // Logic to send confirmation notification upon successful renewal of
-        // subscription
+    private User findUserById(Long userId) {
+        return users.stream()
+                .filter(user -> user.getUserId().equals(userId))
+                .findFirst()
+                .orElse(null);
     }
 
-    // Add more methods as needed
+    public static class User {
+        private final Long userId;
 
-    private static class User {
-        // User-related information and methods can be added here
+        public User(Long userId) {
+            this.userId = userId;
+        }
+
+        public Long getUserId() {
+            return userId;
+        }
+
     }
 }
