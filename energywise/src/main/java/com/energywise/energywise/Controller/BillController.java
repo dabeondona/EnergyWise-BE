@@ -25,7 +25,7 @@ public class BillController {
         return new ResponseEntity<>("Bill created successfully", HttpStatus.CREATED);
     }
 
-    @PutMapping("/update/{userId}")
+    @PutMapping("/update/userId")
     public ResponseEntity<String> updateBill(@PathVariable Long userId, @RequestBody User updatedUser) {
         User existingUser = findUserById(userId);
 
@@ -36,7 +36,7 @@ public class BillController {
         }
     }
 
-    @DeleteMapping("/delete/{userId}")
+    @DeleteMapping("/delete/userId")
     public ResponseEntity<String> deleteBill(@PathVariable Long userId) {
         User existingUser = findUserById(userId);
 

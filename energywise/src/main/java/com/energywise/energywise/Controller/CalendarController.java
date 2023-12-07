@@ -25,7 +25,7 @@ public class CalendarController {
         return new ResponseEntity<>("Event created successfully", HttpStatus.CREATED);
     }
 
-    @PutMapping("/update/{eventId}")
+    @PutMapping("/update/eventId")
     public ResponseEntity<String> updateEvent(@PathVariable Long eventId, @RequestBody Calendar updatedEvent) {
         Calendar existingEvent = findEventById(eventId);
 
