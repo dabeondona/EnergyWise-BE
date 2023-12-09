@@ -36,6 +36,7 @@ public class BillController {
         User existingUser = findUserById(userId);
 
         if (existingUser != null) {
+            // Update existing user logic here, if needed
             return new ResponseEntity<>("Bill updated successfully", HttpStatus.OK);
         } else {
             return new ResponseEntity<>("Bill not found", HttpStatus.NOT_FOUND);
@@ -62,7 +63,11 @@ public class BillController {
     }
 
     public static class User {
-        private final Long userId;
+        private Long userId;
+
+        public User() {
+            // Default constructor
+        }
 
         public User(Long userId) {
             this.userId = userId;
@@ -72,5 +77,8 @@ public class BillController {
             return userId;
         }
 
+        public void setUserId(Long userId) {
+            this.userId = userId;
+        }
     }
 }
