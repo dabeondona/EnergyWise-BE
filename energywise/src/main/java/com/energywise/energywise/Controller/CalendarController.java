@@ -24,7 +24,7 @@ public class CalendarController {
 
     @GetMapping("/print")
     public String printHello() {
-        return "Hello, Mic Test!";
+        return "Hello, Adrian Sepulveda!";
     }
 
     @PostMapping("/create")
@@ -33,13 +33,13 @@ public class CalendarController {
         return new ResponseEntity<>("Event created successfully", HttpStatus.CREATED);
     }
 
-    @PutMapping("/update/eventId")
+    @PutMapping("/update/{eventId}")
     public ResponseEntity<String> updateEvent(@PathVariable Long eventId, @RequestBody CalendarEvent updatedEvent) {
         CalendarEvent existingEvent = findEventById(eventId);
 
         if (existingEvent != null) {
             existingEvent.setTime(updatedEvent.getTime());
-            existingEvent.setTimezone(updatedEvent.getTime());
+            existingEvent.setTimezone(updatedEvent.getTimezone());
 
             return new ResponseEntity<>("Event updated successfully", HttpStatus.OK);
         } else {
@@ -47,7 +47,7 @@ public class CalendarController {
         }
     }
 
-    @DeleteMapping("/delete/eventId")
+    @DeleteMapping("/delete/{eventId}")
     public ResponseEntity<String> deleteEvent(@PathVariable Long eventId) {
         CalendarEvent eventToDelete = findEventById(eventId);
 
@@ -76,7 +76,7 @@ public class CalendarController {
         @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
         private Date time;
 
-        private Date timezone;
+        private String timezone;
         private Long eventId; // Assuming eventId is a unique identifier
 
         // Getter and Setter methods for time, timezone, and eventId
@@ -86,15 +86,19 @@ public class CalendarController {
         }
 
         public Date getTime() {
-            return null;
+            return time;
         }
 
         public void setTime(Date time) {
             this.time = time;
         }
 
-        public void setTimezone(Date date) {
-            this.timezone = date;
+        public String getTimezone() {
+            return timezone;
+        }
+
+        public void setTimezone(String timezone) {
+            this.timezone = timezone;
         }
     }
 }
