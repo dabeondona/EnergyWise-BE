@@ -27,23 +27,33 @@ public class BillController {
 
     @PostMapping("/create")
     public ResponseEntity<String> createBill(@RequestBody User user) {
+        Long userId = user.getUserId();
+
+        if (userId == null || userExists(userId)) {
+            return new ResponseEntity<>("userId already exists", HttpStatus.BAD_REQUEST);
+        }
+
         users.add(user);
         return new ResponseEntity<>("Bill created successfully", HttpStatus.CREATED);
     }
 
-    @PutMapping("/update/userId")
+    private boolean userExists(Long userId) {
+        return users.stream()
+                .anyMatch(existingUser -> existingUser.getUserId() != null && existingUser.getUserId().equals(userId));
+    }
+
+    @PutMapping("/update/userId/{userId}")
     public ResponseEntity<String> updateBill(@PathVariable Long userId, @RequestBody User updatedUser) {
         User existingUser = findUserById(userId);
 
         if (existingUser != null) {
-            // Update existing user logic here, if needed
             return new ResponseEntity<>("Bill updated successfully", HttpStatus.OK);
         } else {
             return new ResponseEntity<>("Bill not found", HttpStatus.NOT_FOUND);
         }
     }
 
-    @DeleteMapping("/delete/userId")
+    @DeleteMapping("/delete/userId/{userId}")
     public ResponseEntity<String> deleteBill(@PathVariable Long userId) {
         User existingUser = findUserById(userId);
 
