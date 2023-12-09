@@ -29,8 +29,20 @@ public class CalendarController {
 
     @PostMapping("/create")
     public ResponseEntity<String> createEvent(@RequestBody CalendarEvent event) {
+        Long eventId = event.getEventId();
+
+        if (eventId == null || eventExists(eventId)) {
+            return new ResponseEntity<>("EventId already exists ", HttpStatus.BAD_REQUEST);
+        }
+
         events.add(event);
         return new ResponseEntity<>("Event created successfully", HttpStatus.CREATED);
+    }
+
+    private boolean eventExists(Long eventId) {
+        return events.stream()
+                .anyMatch(existingEvent -> existingEvent.getEventId() != null
+                        && existingEvent.getEventId().equals(eventId));
     }
 
     @PutMapping("/update/{eventId}")
@@ -47,15 +59,20 @@ public class CalendarController {
         }
     }
 
-    @DeleteMapping("/delete/{eventId}")
-    public ResponseEntity<String> deleteEvent(@PathVariable Long eventId) {
-        CalendarEvent eventToDelete = findEventById(eventId);
+    @DeleteMapping("/delete/eventId")
+    public ResponseEntity<String> deleteEvent(@PathVariable String eventId) {
+        try {
+            Long eventIdLong = Long.parseLong(eventId);
+            CalendarEvent eventToDelete = findEventById(eventIdLong);
 
-        if (eventToDelete != null) {
-            events.remove(eventToDelete);
-            return new ResponseEntity<>("Event deleted successfully", HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>("Event not found", HttpStatus.NOT_FOUND);
+            if (eventToDelete != null) {
+                events.remove(eventToDelete);
+                return new ResponseEntity<>("Event deleted successfully", HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>("Event not found", HttpStatus.NOT_FOUND);
+            }
+        } catch (NumberFormatException e) {
+            return new ResponseEntity<>("Invalid eventId format", HttpStatus.BAD_REQUEST);
         }
     }
 
