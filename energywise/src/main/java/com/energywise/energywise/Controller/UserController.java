@@ -69,6 +69,20 @@ public class UserController {
         }
     }
 
+    @PostMapping("/updatePassword")
+    public ResponseEntity<?> updatePassword(@RequestBody PasswordUpdateRequestDto request) {
+        boolean updateSuccessful = userService.updatePassword(
+                request.getUserId(),
+                request.getCurrentPassword(),
+                request.getNewPassword());
+
+        if (updateSuccessful) {
+            return ResponseEntity.ok("Password updated successfully.");
+        } else {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Incorrect current password or user ID.");
+        }
+    }
+
     private UserDto mapToUserDto(UserEntity user) {
         UserDto userDto = new UserDto();
         userDto.setId(user.getUser_id());
