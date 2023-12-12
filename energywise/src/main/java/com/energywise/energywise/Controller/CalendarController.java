@@ -32,7 +32,7 @@ public class CalendarController {
         Long eventId = event.getEventId();
 
         if (eventId == null || eventExists(eventId)) {
-            return new ResponseEntity<>("EventId already exists ", HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>("Event already exists ", HttpStatus.BAD_REQUEST);
         }
 
         events.add(event);
@@ -59,7 +59,7 @@ public class CalendarController {
         }
     }
 
-    @DeleteMapping("/delete/eventId")
+    @DeleteMapping("/delete/{eventId}")
     public ResponseEntity<String> deleteEvent(@PathVariable String eventId) {
         try {
             Long eventIdLong = Long.parseLong(eventId);
