@@ -3,6 +3,8 @@ package com.energywise.energywise.Controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -30,9 +32,49 @@ public class AdministratorController {
         return "Hello, Mic Test!";
     }
 
+    @PostMapping("/login")
+    public ResponseEntity<?> loginAdmin(@RequestBody LoginDto loginDto) {
+        boolean isValidAdmin = adminService.validateAdmin(loginDto.getUsername(), loginDto.getPassword());
+
+        if (isValidAdmin) {
+            return ResponseEntity.ok().body("Admin authenticated successfully");
+        } else {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials");
+        }
+    }
+
     @PostMapping("/insertAdmin")
-    public AdministratorEntity insertAdmin(@RequestBody AdministratorEntity admin) {
-        return adminService.insertAdmin(admin);
+    public ResponseEntity<?> insertAdmin(@RequestBody AdminRegistrationDto registrationDto) {
+        AdministratorEntity admin = new AdministratorEntity();
+        admin.setUsername(registrationDto.getUsername());
+        admin.setPassword(registrationDto.getPassword());
+        admin.setFirstname(registrationDto.getFirstname());
+        admin.setLastname(registrationDto.getLastname());
+
+        AdministratorEntity savedAdmin = adminService.insertAdmin(admin);
+
+        AdminDto adminDto = mapToAdminDto(savedAdmin);
+
+        return new ResponseEntity<>(adminDto, HttpStatus.CREATED);
+    }
+
+    @GetMapping("/getAdminDetails")
+    public ResponseEntity<?> getAdminDetails(@RequestParam String username) {
+        AdministratorEntity admin = adminService.findAdminByUsername(username);
+        if (admin != null) {
+            AdminDto adminDto = mapToAdminDto(admin);
+            return ResponseEntity.ok(adminDto);
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Admin not found");
+        }
+    }
+
+    private AdminDto mapToAdminDto(AdministratorEntity admin) {
+        AdminDto adminDto = new AdminDto();
+        adminDto.setUsername(admin.getUsername());
+        adminDto.setFirstname(admin.getFirstname());
+        adminDto.setLastname(admin.getLastname());
+        return adminDto;
     }
 
     @GetMapping("/getAllAdmins")

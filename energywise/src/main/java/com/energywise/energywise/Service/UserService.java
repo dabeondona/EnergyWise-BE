@@ -5,6 +5,7 @@ import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -58,25 +59,64 @@ public class UserService {
         }
     }
 
-    // U - TO BE UTILIZED FOR THE SETTINGS PAGE
-    @SuppressWarnings("finally")
-    public UserEntity updateUser(int user_id, UserEntity newUserDetails) {
-        UserEntity user = new UserEntity();
-
-        try {
-            user = userRepo.findById(user_id).get();
-            user.setUsername(newUserDetails.getUsername());
-            user.setFirstname(newUserDetails.getFirstname());
-            user.setLastname(newUserDetails.getLastname());
-            user.setPassword(newUserDetails.getPassword());
-            user.setEmail(newUserDetails.getEmail());
-            user.setPicture(newUserDetails.getPicture());
-            user.setDeleted(newUserDetails.isDeleted());
-        } catch (NoSuchElementException e) {
-            throw new NoSuchElementException("User " + user_id + " not found!");
-        } finally {
-            return userRepo.save(user);
+    // Updating Password
+    public boolean updatePassword(Integer userId, String currentPassword, String newPassword) {
+        UserEntity user = userRepo.findById(userId).orElse(null);
+        if (user == null) {
+            throw new UsernameNotFoundException("User not found");
         }
+
+        if (!passwordEncoder.matches(currentPassword, user.getPassword())) {
+            return false;
+        }
+
+        user.setPassword(passwordEncoder.encode(newPassword));
+
+        userRepo.save(user);
+
+        return true;
+    }
+
+    // U - TO BE UTILIZED FOR THE SETTINGS PAGE
+    public UserEntity updateUser(int user_id, UserEntity newUserDetails) {
+        Optional<UserEntity> userOptional = userRepo.findById(user_id);
+
+        if (!userOptional.isPresent()) {
+            throw new NoSuchElementException("User " + user_id + " not found!");
+        }
+
+        UserEntity user = userOptional.get();
+
+        if (newUserDetails.getPassword() != null && !newUserDetails.getPassword().isEmpty()) {
+            String encodedPassword = passwordEncoder.encode(newUserDetails.getPassword());
+            user.setPassword(encodedPassword);
+        }
+
+        if (newUserDetails.getUsername() != null && !newUserDetails.getUsername().isEmpty()) {
+            user.setUsername(newUserDetails.getUsername());
+        }
+
+        if (newUserDetails.getFirstname() != null && !newUserDetails.getFirstname().isEmpty()) {
+            user.setFirstname(newUserDetails.getFirstname());
+        }
+
+        if (newUserDetails.getLastname() != null && !newUserDetails.getLastname().isEmpty()) {
+            user.setLastname(newUserDetails.getLastname());
+        }
+
+        if (newUserDetails.getEmail() != null && !newUserDetails.getEmail().isEmpty()) {
+            user.setEmail(newUserDetails.getEmail());
+        }
+
+        if (newUserDetails.getPicture() != null) {
+            user.setPicture(newUserDetails.getPicture());
+        }
+
+        if (newUserDetails.isDeleted() != user.isDeleted()) {
+            user.setDeleted(newUserDetails.isDeleted());
+        }
+
+        return userRepo.save(user);
     }
 
     // D
