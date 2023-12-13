@@ -1,5 +1,6 @@
 package com.energywise.energywise.Service;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -8,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.energywise.energywise.Entity.UserEntity;
 import com.energywise.energywise.Repository.UserRepository;
@@ -48,17 +50,6 @@ public class UserService {
         return userRepo.findAll();
     }
 
-    // R - GETTING PICTURE LINK
-    public String getPicture(int user_id) {
-        Optional<UserEntity> userOptional = userRepo.findById(user_id);
-
-        if (userOptional.isPresent()) {
-            return userOptional.get().getPicture();
-        } else {
-            throw new NoSuchElementException("User " + user_id + " not found!");
-        }
-    }
-
     // Updating Password
     public boolean updatePassword(Integer userId, String newPassword) {
         UserEntity user = userRepo.findById(userId).orElse(null);
@@ -74,6 +65,26 @@ public class UserService {
         userRepo.save(user);
 
         return true;
+    }
+
+    // Updating Picture
+    public boolean updatePicture(String username, MultipartFile picture) {
+        try {
+            UserEntity user = userRepo.findByUsername(username);
+            if (user == null) {
+                throw new IllegalStateException("User not found");
+            }
+
+            byte[] pictureB = picture.getBytes();
+
+            user.setPicture(pictureB);
+
+            userRepo.save(user);
+            return true;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 
     // U - TO BE UTILIZED FOR THE SETTINGS PAGE
@@ -105,10 +116,6 @@ public class UserService {
 
         if (newUserDetails.getEmail() != null && !newUserDetails.getEmail().isEmpty()) {
             user.setEmail(newUserDetails.getEmail());
-        }
-
-        if (newUserDetails.getPicture() != null) {
-            user.setPicture(newUserDetails.getPicture());
         }
 
         if (newUserDetails.isDeleted() != user.isDeleted()) {

@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.energywise.energywise.Entity.UserEntity;
 import com.energywise.energywise.Service.UserService;
@@ -93,14 +94,22 @@ public class UserController {
         return userDto;
     }
 
+    @PostMapping("/updatePicture")
+    public ResponseEntity<?> updatePicture(@RequestParam("username") String username,
+            @RequestParam("picture") MultipartFile picture) {
+
+        boolean isUpdated = userService.updatePicture(username, picture);
+
+        if (isUpdated) {
+            return ResponseEntity.ok("Picture updated successfully.");
+        } else {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to update picture.");
+        }
+    }
+
     @GetMapping("/getAllUsers")
     public List<UserEntity> getAllUsers() {
         return userService.getAllUsers();
-    }
-
-    @GetMapping("/getUserPicture") // TBC
-    public String getPicture(@RequestParam int user_id) {
-        return userService.getPicture(user_id);
     }
 
     @PutMapping("/updateUser/{user_id}")

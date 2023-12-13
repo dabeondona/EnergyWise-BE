@@ -9,7 +9,7 @@ public class UserDto {
     private String email;
     private String firstName;
     private String lastName;
-    private String picture;
+    private byte[] picture;
 
     public Integer getId() {
         return id;
@@ -51,11 +51,11 @@ public class UserDto {
         this.lastName = lastName;
     }
 
-    public String getPicture() {
+    public byte[] getPicture() {
         return picture;
     }
 
-    public void setPicture(String picture) {
+    public void setPicture(byte[] picture) {
         this.picture = picture;
     }
 
