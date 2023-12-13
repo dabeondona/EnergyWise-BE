@@ -60,18 +60,17 @@ public class UserService {
     }
 
     // Updating Password
-    public boolean updatePassword(Integer userId, String currentPassword, String newPassword) {
+    public boolean updatePassword(Integer userId, String newPassword) {
         UserEntity user = userRepo.findById(userId).orElse(null);
         if (user == null) {
             throw new UsernameNotFoundException("User not found");
         }
 
-        if (!passwordEncoder.matches(currentPassword, user.getPassword())) {
+        if (passwordEncoder.matches(newPassword, user.getPassword())) {
             return false;
         }
 
         user.setPassword(passwordEncoder.encode(newPassword));
-
         userRepo.save(user);
 
         return true;

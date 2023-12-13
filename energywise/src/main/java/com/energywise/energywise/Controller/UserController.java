@@ -73,7 +73,6 @@ public class UserController {
     public ResponseEntity<?> updatePassword(@RequestBody PasswordUpdateRequestDto request) {
         boolean updateSuccessful = userService.updatePassword(
                 request.getUserId(),
-                request.getCurrentPassword(),
                 request.getNewPassword());
 
         if (updateSuccessful) {
