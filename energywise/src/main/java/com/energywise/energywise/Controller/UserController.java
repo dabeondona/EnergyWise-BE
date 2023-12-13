@@ -89,6 +89,7 @@ public class UserController {
         userDto.setFirstName(user.getFirstname());
         userDto.setLastName(user.getLastname());
         userDto.setEmail(user.getEmail());
+        userDto.setPicture(user.getPicture());
         return userDto;
     }
 
