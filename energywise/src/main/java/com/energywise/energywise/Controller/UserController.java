@@ -3,7 +3,9 @@ package com.energywise.energywise.Controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -90,7 +92,6 @@ public class UserController {
         userDto.setFirstName(user.getFirstname());
         userDto.setLastName(user.getLastname());
         userDto.setEmail(user.getEmail());
-        userDto.setPicture(user.getPicture());
         return userDto;
     }
 
@@ -104,6 +105,23 @@ public class UserController {
             return ResponseEntity.ok("Picture updated successfully.");
         } else {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to update picture.");
+        }
+    }
+
+    @GetMapping("/{userId}/picture")
+    public ResponseEntity<?> getPicture(@PathVariable("userId") Integer userId) {
+        try {
+            byte[] image = userService.getUserPicture(userId);
+            if (image != null && image.length > 0) {
+                return ResponseEntity.ok()
+                        .contentType(MediaType.IMAGE_JPEG)
+                        .body(new ByteArrayResource(image));
+            } else {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Image not found or empty");
+            }
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Error retrieving image: " + e.getMessage());
         }
     }
 

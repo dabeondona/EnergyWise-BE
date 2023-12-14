@@ -67,6 +67,12 @@ public class UserService {
         return true;
     }
 
+    public byte[] getUserPicture(Integer userId) {
+        return userRepo.findById(userId)
+                .map(UserEntity::getPicture)
+                .orElseThrow(() -> new IllegalStateException("User with ID " + userId + " not found"));
+    }
+
     // Updating Picture
     public boolean updatePicture(String username, MultipartFile picture) {
         try {
