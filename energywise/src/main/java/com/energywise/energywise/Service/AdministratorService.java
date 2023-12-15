@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.NoSuchElementException;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.energywise.energywise.Entity.AdministratorEntity;
@@ -15,9 +16,29 @@ public class AdministratorService {
     @Autowired
     AdministratorRepository adminRepo;
 
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
     // C - TO BE REMOVED
     public AdministratorEntity insertAdmin(AdministratorEntity admin) {
+        String encodedPassword = passwordEncoder.encode(admin.getPassword());
+        admin.setPassword(encodedPassword);
+
         return adminRepo.save(admin);
+    }
+
+    // Logging In
+    public boolean validateAdmin(String username, String password) {
+        AdministratorEntity admin = adminRepo.findByUsername(username);
+
+        if (admin != null && passwordEncoder.matches(password, admin.getPassword())) {
+            return true;
+        }
+        return false;
+    }
+
+    public AdministratorEntity findAdminByUsername(String username) {
+        return adminRepo.findByUsername(username);
     }
 
     // R - TO BE REMOVED

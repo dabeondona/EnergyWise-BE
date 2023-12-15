@@ -69,8 +69,23 @@ public class UserController {
         }
     }
 
+    @PostMapping("/updatePassword")
+    public ResponseEntity<?> updatePassword(@RequestBody PasswordUpdateRequestDto request) {
+        boolean updateSuccessful = userService.updatePassword(
+                request.getUserId(),
+                request.getCurrentPassword(),
+                request.getNewPassword());
+
+        if (updateSuccessful) {
+            return ResponseEntity.ok("Password updated successfully.");
+        } else {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Incorrect current password or user ID.");
+        }
+    }
+
     private UserDto mapToUserDto(UserEntity user) {
         UserDto userDto = new UserDto();
+        userDto.setId(user.getUser_id());
         userDto.setUsername(user.getUsername());
         userDto.setFirstName(user.getFirstname());
         userDto.setLastName(user.getLastname());
@@ -88,9 +103,10 @@ public class UserController {
         return userService.getPicture(user_id);
     }
 
-    @PutMapping("/updateUser")
-    public UserEntity updateUser(@RequestParam int user_id, @RequestBody UserEntity newUserDetails) {
-        return userService.updateUser(user_id, newUserDetails);
+    @PutMapping("/updateUser/{user_id}")
+    public ResponseEntity<UserEntity> updateUser(@PathVariable int user_id, @RequestBody UserEntity newUserDetails) {
+        UserEntity updatedUser = userService.updateUser(user_id, newUserDetails);
+        return new ResponseEntity<>(updatedUser, HttpStatus.OK);
     }
 
     @DeleteMapping("/deleteUser/{user_id}")
