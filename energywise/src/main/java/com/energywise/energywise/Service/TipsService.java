@@ -11,46 +11,47 @@ import com.energywise.energywise.Repository.TipsRepository;
 
 @Service
 public class TipsService {
- @Autowired
-    TipsRepository tipsRepo;
 
-    // C - TO BE REMOVED
+    @Autowired
+    TipsRepository tRepo;
+
+    // C
     public TipsEntity insertTips(TipsEntity tip) {
-        return tipsRepo.save(tip);
+        return tRepo.save(tip);
     }
 
-    // R - TO BE REMOVED
+    // R
     public List<TipsEntity> getAllTips() {
-        return tipsRepo.findAll();
+        return tRepo.findAll();
     }
 
     // U
     @SuppressWarnings("finally")
-    public TipsEntity updateTips(int tip_id, TipsEntity newTipsDetails) {
+    public TipsEntity updateRate(int tip_id, TipsEntity newTipsDetails) {
         TipsEntity tip = new TipsEntity();
 
         try {
-            tip = tipsRepo.findById(tip_id).get();
+            tip = tRepo.findById(tip_id).get();
             tip.setTitle(newTipsDetails.getTitle());
             tip.setContent(newTipsDetails.getContent());
             tip.setDate(newTipsDetails.getDate());
-            tip.setDeleted(newTipsDetails.isDeleted());
+            
         } catch (NoSuchElementException e) {
-            throw new NoSuchElementException("Admin " + tip_id + " not found!");
+            throw new NoSuchElementException("Tip " + tip_id + " not found!");
         } finally {
-            return tipsRepo.save(tip);
+            return tRepo.save(tip);
         }
     }
 
-    // D - TO BE DELETED
+    // D
     public String deleteTips(int tip_id) {
         String msg = "";
 
-        if (tipsRepo.findById(tip_id) != null) {
-            tipsRepo.deleteById(tip_id);
-            msg = "Admin " + tip_id + " is deleted!";
+        if (tRepo.findById(tip_id) != null) {
+            tRepo.deleteById(tip_id);
+            msg = "Tip " + tip_id + " is deleted!";
         } else {
-            msg = "Admin " + tip_id + " not found!";
+            msg = "Tip " + tip_id + " not found!";
         }
 
         return msg;
