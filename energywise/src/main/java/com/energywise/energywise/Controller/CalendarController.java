@@ -1,12 +1,9 @@
 package com.energywise.energywise.Controller;
 
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
-import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -16,106 +13,44 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.energywise.energywise.Entity.CalendarEntity;
+import com.energywise.energywise.Service.CalendarService;
+
+@CrossOrigin(origins = "http://localhost:3000")
 @RestController
 @RequestMapping("/calendar")
 public class CalendarController {
 
-    private final List<CalendarEvent> events = new ArrayList<>();
+    @Autowired
+    CalendarService calendarService;
 
     @GetMapping("/print")
     public String printHello() {
-        return "Hello, Adrian Sepulveda!";
+        return "Hello, Calendar!";
     }
 
-    @PostMapping("/create")
-    public ResponseEntity<String> createEvent(@RequestBody CalendarEvent event) {
-        Long eventId = event.getEventId();
-
-        if (eventId == null || eventExists(eventId)) {
-            return new ResponseEntity<>("Event already exists ", HttpStatus.BAD_REQUEST);
-        }
-
-        events.add(event);
-        return new ResponseEntity<>("Event created successfully", HttpStatus.CREATED);
+    @PostMapping("/addEvent")
+    public CalendarEntity addEvent(@RequestBody CalendarEntity event) {
+        return calendarService.addEvent(event);
     }
 
-    private boolean eventExists(Long eventId) {
-        return events.stream()
-                .anyMatch(existingEvent -> existingEvent.getEventId() != null
-                        && existingEvent.getEventId().equals(eventId));
+    @GetMapping("/getAllEvents")
+    public List<CalendarEntity> getAllEvents() {
+        return calendarService.getAllEvents();
     }
 
-    @PutMapping("/update/{eventId}")
-    public ResponseEntity<String> updateEvent(@PathVariable Long eventId, @RequestBody CalendarEvent updatedEvent) {
-        CalendarEvent existingEvent = findEventById(eventId);
-
-        if (existingEvent != null) {
-            existingEvent.setTime(updatedEvent.getTime());
-            existingEvent.setTimezone(updatedEvent.getTimezone());
-
-            return new ResponseEntity<>("Event updated successfully", HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>("Event not found", HttpStatus.NOT_FOUND);
-        }
+    @GetMapping("/getEventById/{eventId}")
+    public CalendarEntity getEventById(@PathVariable long eventId) {
+        return calendarService.getEventById(eventId);
     }
 
-    @DeleteMapping("/delete/{eventId}")
-    public ResponseEntity<String> deleteEvent(@PathVariable String eventId) {
-        try {
-            Long eventIdLong = Long.parseLong(eventId);
-            CalendarEvent eventToDelete = findEventById(eventIdLong);
-
-            if (eventToDelete != null) {
-                events.remove(eventToDelete);
-                return new ResponseEntity<>("Event deleted successfully", HttpStatus.OK);
-            } else {
-                return new ResponseEntity<>("Event not found", HttpStatus.NOT_FOUND);
-            }
-        } catch (NumberFormatException e) {
-            return new ResponseEntity<>("Invalid eventId format", HttpStatus.BAD_REQUEST);
-        }
+    @PutMapping("/updateEvent/{eventId}")
+    public CalendarEntity updateEvent(@PathVariable long eventId, @RequestBody CalendarEntity updatedEvent) {
+        return calendarService.updateEvent(eventId, updatedEvent);
     }
 
-    @PostMapping("/createRecurring")
-    public ResponseEntity<String> createRecurringEvent(@RequestBody CalendarEvent recurringEvent) {
-        events.add(recurringEvent);
-        return new ResponseEntity<>("Recurring event created successfully", HttpStatus.CREATED);
-    }
-
-    private CalendarEvent findEventById(Long eventId) {
-        return events.stream()
-                .filter(event -> event.getEventId().equals(eventId))
-                .findFirst()
-                .orElse(null);
-    }
-
-    static class CalendarEvent {
-        @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
-        private Date time;
-
-        private String timezone;
-        private Long eventId; // Assuming eventId is a unique identifier
-
-        // Getter and Setter methods for time, timezone, and eventId
-
-        public Long getEventId() {
-            return eventId;
-        }
-
-        public Date getTime() {
-            return time;
-        }
-
-        public void setTime(Date time) {
-            this.time = time;
-        }
-
-        public String getTimezone() {
-            return timezone;
-        }
-
-        public void setTimezone(String timezone) {
-            this.timezone = timezone;
-        }
+    @DeleteMapping("/deleteEvent/{eventId}")
+    public String deleteEvent(@PathVariable long eventId) {
+        return calendarService.deleteEvent(eventId);
     }
 }
