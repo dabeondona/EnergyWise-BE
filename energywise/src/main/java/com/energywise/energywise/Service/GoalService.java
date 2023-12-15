@@ -36,6 +36,7 @@ public class GoalService {
             goal.setGoalName(newGoalDetails.getGoalName());
             goal.setTargetValue(newGoalDetails.getTargetValue());
             goal.setCompletionDate(newGoalDetails.getCompletionDate());
+            goal.setDeleted(newGoalDetails.isDeleted());
 
         } catch (NoSuchElementException e) {
             throw new NoSuchElementException("Goal " + goal_id + " not found!");
