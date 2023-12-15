@@ -9,48 +9,50 @@ import org.springframework.stereotype.Service;
 import com.energywise.energywise.Entity.GoalEntity;
 import com.energywise.energywise.Repository.GoalRepository;
 
+
 @Service
 public class GoalService {
- @Autowired
-    GoalRepository goalRepo;
 
-    // C - TO BE REMOVED
+    @Autowired
+    GoalRepository gRepo;
+
+    // C
     public GoalEntity insertGoal(GoalEntity goal) {
-        return goalRepo.save(goal);
+        return gRepo.save(goal);
     }
 
-    // R - TO BE REMOVED
+    // R
     public List<GoalEntity> getAllGoals() {
-        return goalRepo.findAll();
+        return gRepo.findAll();
     }
 
     // U
     @SuppressWarnings("finally")
-    public GoalEntity updateGoals(int goal_id, GoalEntity newGoalDetails) {
+    public GoalEntity updateGoal(int goal_id, GoalEntity newGoalDetails) {
         GoalEntity goal = new GoalEntity();
 
         try {
-            goal = goalRepo.findById(goal_id).get();
+            goal = gRepo.findById(goal_id).get();
             goal.setGoalName(newGoalDetails.getGoalName());
             goal.setTargetValue(newGoalDetails.getTargetValue());
             goal.setCompletionDate(newGoalDetails.getCompletionDate());
-            goal.setDeleted(newGoalDetails.isDeleted());
+
         } catch (NoSuchElementException e) {
-            throw new NoSuchElementException("Admin " + goal_id + " not found!");
+            throw new NoSuchElementException("Goal " + goal_id + " not found!");
         } finally {
-            return goalRepo.save(goal);
+            return gRepo.save(goal);
         }
     }
 
-    // D - TO BE DELETED
+    // D
     public String deleteGoal(int goal_id) {
         String msg = "";
 
-        if (goalRepo.findById(goal_id) != null) {
-            goalRepo.deleteById(goal_id);
-            msg = "Admin " + goal_id + " is deleted!";
+        if (gRepo.findById(goal_id) != null) {
+            gRepo.deleteById(goal_id);
+            msg = "Goal " + goal_id + " is deleted!";
         } else {
-            msg = "Admin " + goal_id + " not found!";
+            msg = "Goal " + goal_id + " not found!";
         }
 
         return msg;

@@ -35,6 +35,7 @@ public class TipsService {
             tip.setTitle(newTipsDetails.getTitle());
             tip.setContent(newTipsDetails.getContent());
             tip.setDate(newTipsDetails.getDate());
+            tip.setDeleted(newTipsDetails.isDeleted());
             
         } catch (NoSuchElementException e) {
             throw new NoSuchElementException("Tip " + tip_id + " not found!");

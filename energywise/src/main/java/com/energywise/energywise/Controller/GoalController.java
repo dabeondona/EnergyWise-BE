@@ -21,30 +21,32 @@ import com.energywise.energywise.Service.GoalService;
 @RestController
 @RequestMapping("/goal")
 public class GoalController {
-    
 
     @Autowired
     GoalService gService;
 
     @GetMapping("/print")
-    public String printHello(){
+    public String printHello() {
         return "Hello, Mic Test!";
     }
+
     @PostMapping("/insertGoal")
-    public GoalEntity insertGoal(@RequestBody GoalEntity goal){
+    public GoalEntity insertGoal(@RequestBody GoalEntity goal) {
         return gService.insertGoal(goal);
     }
+
     @GetMapping("/getAllGoals")
-    public List<GoalEntity> getAllGoals(){
+    public List<GoalEntity> getAllGoals() {
         return gService.getAllGoals();
     }
-    @PutMapping("/updateGoals")
-    public GoalEntity updateGoals(@RequestParam int goal_id, @RequestBody GoalEntity newGoalDetails){
-        return gService.updateGoals(goal_id, newGoalDetails);
-    }
-    @DeleteMapping("/deleteGoal/{goal_id}")
-    public String deleteGoal(@PathVariable int goal_id){
-        return gService.deleteGoal(goal_id);
+
+    @PutMapping("/updateGoal")
+    public GoalEntity updateGoal(@RequestParam int goal_id, @RequestBody GoalEntity newGoalDetails) {
+        return gService.updateGoal(goal_id, newGoalDetails);
     }
 
+    @DeleteMapping("/deleteGoal/{goal_id}")
+    public String deleteGoal(@PathVariable int goal_id) {
+        return gService.deleteGoal(goal_id);
+    }
 }
