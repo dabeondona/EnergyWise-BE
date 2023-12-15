@@ -50,7 +50,7 @@ public class UserEntity {
         this.password = password;
         this.email = email;
         this.picture = picture;
-        this.isDeleted = isDeleted;
+        this.isDeleted = false;
     }
 
     public int getUser_id() {
