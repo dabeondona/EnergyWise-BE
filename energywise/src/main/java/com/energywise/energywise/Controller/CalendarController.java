@@ -3,6 +3,8 @@ package com.energywise.energywise.Controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -25,32 +27,58 @@ public class CalendarController {
     CalendarService calendarService;
 
     @GetMapping("/print")
-    public String printHello() {
-        return "Hello, Calendar!";
+    public ResponseEntity<String> printHello() {
+        return ResponseEntity.ok("Hello, Calendar!");
     }
 
     @PostMapping("/addEvent")
-    public CalendarEntity addEvent(@RequestBody CalendarEntity event) {
-        return calendarService.addEvent(event);
+    public ResponseEntity<CalendarEntity> addEvent(@RequestBody CalendarEntity event) {
+        try {
+            CalendarEntity addedEvent = calendarService.addEvent(event);
+            return ResponseEntity.status(HttpStatus.CREATED).body(addedEvent);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
     }
 
     @GetMapping("/getAllEvents")
-    public List<CalendarEntity> getAllEvents() {
-        return calendarService.getAllEvents();
+    public ResponseEntity<List<CalendarEntity>> getAllEvents() {
+        List<CalendarEntity> events = calendarService.getAllEvents();
+        return ResponseEntity.ok(events);
     }
 
     @GetMapping("/getEventById/{eventId}")
-    public CalendarEntity getEventById(@PathVariable long eventId) {
-        return calendarService.getEventById(eventId);
+    public ResponseEntity<CalendarEntity> getEventById(@PathVariable long eventId) {
+        CalendarEntity event = calendarService.getEventById(eventId);
+        if (event != null) {
+            return ResponseEntity.ok(event);
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
     }
 
     @PutMapping("/updateEvent/{eventId}")
-    public CalendarEntity updateEvent(@PathVariable long eventId, @RequestBody CalendarEntity updatedEvent) {
-        return calendarService.updateEvent(eventId, updatedEvent);
+    public ResponseEntity<CalendarEntity> updateEvent(@PathVariable long eventId,
+            @RequestBody CalendarEntity updatedEvent) {
+        try {
+            CalendarEntity event = calendarService.updateEvent(eventId, updatedEvent);
+            if (event != null) {
+                return ResponseEntity.ok(event);
+            } else {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+            }
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
     }
 
     @DeleteMapping("/deleteEvent/{eventId}")
-    public String deleteEvent(@PathVariable long eventId) {
-        return calendarService.deleteEvent(eventId);
+    public ResponseEntity<String> deleteEvent(@PathVariable long eventId) {
+        String result = calendarService.deleteEvent(eventId);
+        if (result.equals("Success")) {
+            return ResponseEntity.ok(result);
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
     }
 }

@@ -1,7 +1,7 @@
+// CalendarService.java
 package com.energywise.energywise.Service;
 
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,35 +14,40 @@ import com.energywise.energywise.Repository.CalendarRepository;
 public class CalendarService {
 
     @Autowired
-    private CalendarRepository calendarRepo;
+    private CalendarRepository calendarRepository;
 
-    public CalendarEntity createEvent(CalendarEntity event) {
-        return calendarRepo.save(event);
+    public CalendarEntity addEvent(CalendarEntity event) {
+        return calendarRepository.save(event);
     }
 
     public List<CalendarEntity> getAllEvents() {
-        return calendarRepo.findAll();
+        return calendarRepository.findAll();
     }
 
-    public CalendarEntity updateEvent(Integer eventId, CalendarEntity updatedEvent) {
-        Optional<CalendarEntity> optionalEvent = calendarRepo.findById(eventId);
+    public CalendarEntity getEventById(long eventId) {
+        Optional<CalendarEntity> optionalEvent = calendarRepository.findById((int) eventId);
+        return optionalEvent.orElse(null);
+    }
 
+    public CalendarEntity updateEvent(long eventId, CalendarEntity updatedEvent) {
+        Optional<CalendarEntity> optionalEvent = calendarRepository.findById((int) eventId);
         if (optionalEvent.isPresent()) {
-            CalendarEntity event = optionalEvent.get();
-            return calendarRepo.save(event);
+            CalendarEntity existingEvent = optionalEvent.get();
+            existingEvent.setEventName(updatedEvent.getEventName());
+            existingEvent.setEventDate(updatedEvent.getEventDate());
+            existingEvent.setEventDescription(updatedEvent.getEventDescription());
+            return calendarRepository.save(existingEvent);
         } else {
-            throw new NoSuchElementException("Event with ID " + eventId + " not found!");
+            return null;
         }
     }
 
-    public String deleteEvent(Integer eventId) {
-        Optional<CalendarEntity> optionalEvent = calendarRepo.findById(eventId);
-
-        if (optionalEvent.isPresent()) {
-            calendarRepo.deleteById(eventId);
-            return "Event with ID " + eventId + " has been deleted.";
+    public String deleteEvent(long eventId) {
+        if (calendarRepository.existsById((int) eventId)) {
+            calendarRepository.deleteById((int) eventId);
+            return "Success";
         } else {
-            throw new NoSuchElementException("Event with ID " + eventId + " not found!");
+            return "Event not found";
         }
     }
 }
