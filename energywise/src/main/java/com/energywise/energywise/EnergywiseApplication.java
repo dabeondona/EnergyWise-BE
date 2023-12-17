@@ -8,6 +8,6 @@ public class EnergywiseApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(EnergywiseApplication.class, args);
-	} // test
+	}
 
 }
