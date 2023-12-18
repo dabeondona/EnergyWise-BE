@@ -51,6 +51,10 @@ public class EnergyConsumptionTableService {
         return tableEntries;
     }
 
+    public boolean checkUser(Integer userId) {
+        return ectRepo.existsByUserId(userId);
+    }
+
     public List<EnergyConsumptionTableEntity> getEntriesByUserId(Integer user_id) {
         return ectRepo.findByUserId(user_id);
     }

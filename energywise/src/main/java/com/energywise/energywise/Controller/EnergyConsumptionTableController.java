@@ -40,13 +40,24 @@ public class EnergyConsumptionTableController {
     }
 
     @GetMapping("/user/{userId}")
-    public ResponseEntity<?> getEnergyConsumptionEntriesByUser(@PathVariable Integer user_id) {
+    public ResponseEntity<?> getEnergyConsumptionEntriesByUser(@PathVariable Integer userId) {
         try {
-            List<EnergyConsumptionTableEntity> entries = ectService.getEntriesByUserId(user_id);
+            List<EnergyConsumptionTableEntity> entries = ectService.getEntriesByUserId(userId);
             return ResponseEntity.ok(entries);
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.internalServerError().body("Error retrieving entries: " + e.getMessage());
+        }
+    }
+
+    @GetMapping("/user/check/{userId}")
+    public ResponseEntity<?> checkUser(@PathVariable Integer userId) {
+        try {
+            boolean exists = ectService.checkUser(userId);
+            return ResponseEntity.ok(exists);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.internalServerError().body("Error checking user: " + e.getMessage());
         }
     }
 }
