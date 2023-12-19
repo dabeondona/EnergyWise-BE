@@ -1,5 +1,6 @@
 package com.energywise.energywise.Service;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -8,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.energywise.energywise.Entity.UserEntity;
 import com.energywise.energywise.Repository.UserRepository;
@@ -48,33 +50,47 @@ public class UserService {
         return userRepo.findAll();
     }
 
-    // R - GETTING PICTURE LINK
-    public String getPicture(int user_id) {
-        Optional<UserEntity> userOptional = userRepo.findById(user_id);
-
-        if (userOptional.isPresent()) {
-            return userOptional.get().getPicture();
-        } else {
-            throw new NoSuchElementException("User " + user_id + " not found!");
-        }
-    }
-
     // Updating Password
-    public boolean updatePassword(Integer userId, String currentPassword, String newPassword) {
+    public boolean updatePassword(Integer userId, String newPassword) {
         UserEntity user = userRepo.findById(userId).orElse(null);
         if (user == null) {
             throw new UsernameNotFoundException("User not found");
         }
 
-        if (!passwordEncoder.matches(currentPassword, user.getPassword())) {
+        if (passwordEncoder.matches(newPassword, user.getPassword())) {
             return false;
         }
 
         user.setPassword(passwordEncoder.encode(newPassword));
-
         userRepo.save(user);
 
         return true;
+    }
+
+    public byte[] getUserPicture(Integer userId) {
+        return userRepo.findById(userId)
+                .map(UserEntity::getPicture)
+                .orElseThrow(() -> new IllegalStateException("User with ID " + userId + " not found"));
+    }
+
+    // Updating Picture
+    public boolean updatePicture(String username, MultipartFile picture) {
+        try {
+            UserEntity user = userRepo.findByUsername(username);
+            if (user == null) {
+                throw new IllegalStateException("User not found");
+            }
+
+            byte[] pictureB = picture.getBytes();
+
+            user.setPicture(pictureB);
+
+            userRepo.save(user);
+            return true;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 
     // U - TO BE UTILIZED FOR THE SETTINGS PAGE
@@ -106,10 +122,6 @@ public class UserService {
 
         if (newUserDetails.getEmail() != null && !newUserDetails.getEmail().isEmpty()) {
             user.setEmail(newUserDetails.getEmail());
-        }
-
-        if (newUserDetails.getPicture() != null) {
-            user.setPicture(newUserDetails.getPicture());
         }
 
         if (newUserDetails.isDeleted() != user.isDeleted()) {
