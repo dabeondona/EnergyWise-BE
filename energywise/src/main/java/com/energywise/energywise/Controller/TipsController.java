@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -43,9 +44,9 @@ public class TipsController {
     }
 
     @PutMapping("/updateTips")
-    public TipsEntity updateTips(@RequestParam("tip_id") int tip_id, @RequestBody TipsEntity newTipsDetails) {
-    return tService.updateTips(tip_id, newTipsDetails);
-}
+      public TipsEntity updateTips(@RequestParam("tip_id") int tip_id, @RequestBody TipsEntity newTipsDetails) {
+        return tService.updateTips(tip_id, newTipsDetails);
+    }
 
 
         @DeleteMapping("/deleteTips/{tips_id}")
@@ -58,5 +59,6 @@ public class TipsController {
             e.printStackTrace(); // Log the exception for debugging purposes
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error occurred during tip deletion.");
         }
+
     }
 }
