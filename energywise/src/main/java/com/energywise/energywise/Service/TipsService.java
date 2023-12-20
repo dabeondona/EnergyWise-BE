@@ -27,7 +27,7 @@ public class TipsService {
 
     // U
     @SuppressWarnings("finally")
-    public TipsEntity updateRate(int tip_id, TipsEntity newTipsDetails) {
+    public TipsEntity updateTips(int tip_id, TipsEntity newTipsDetails) {
         TipsEntity tip = new TipsEntity();
 
         try {

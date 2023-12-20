@@ -2,15 +2,16 @@ package com.energywise.energywise.Entity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GenerationType;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+
+import com.energywise.energywise.ImageUtility;
 
 @Entity
 @Table(name = "tbluser")
 public class UserEntity {
-    // TO BE UPDATED: PICTURES
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_id")
@@ -32,7 +33,7 @@ public class UserEntity {
     private String email;
 
     @Column(name = "user_picture")
-    private String picture = "Placeholder picture here";
+    private byte[] picture = ImageUtility.getDefaultImage();
 
     @Column(name = "user_isDeleted")
     private boolean isDeleted;
@@ -42,7 +43,7 @@ public class UserEntity {
     }
 
     public UserEntity(int user_id, String username, String firstname, String lastname, String password, String email,
-            String picture, boolean isDeleted) {
+            byte[] picture, boolean isDeleted) {
         this.user_id = user_id;
         this.username = username;
         this.firstname = firstname;
@@ -50,7 +51,7 @@ public class UserEntity {
         this.password = password;
         this.email = email;
         this.picture = picture;
-        this.isDeleted = isDeleted;
+        this.isDeleted = false;
     }
 
     public int getUser_id() {
@@ -101,11 +102,11 @@ public class UserEntity {
         this.email = email;
     }
 
-    public String getPicture() {
+    public byte[] getPicture() {
         return picture;
     }
 
-    public void setPicture(String picture) {
+    public void setPicture(byte[] picture) {
         this.picture = picture;
     }
 

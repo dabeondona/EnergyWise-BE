@@ -3,6 +3,9 @@ package com.energywise.energywise.Controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -41,12 +44,21 @@ public class TipsController {
     }
 
     @PutMapping("/updateTips")
-    public TipsEntity updateRate(@RequestParam int tip_id, @RequestBody TipsEntity newTipsDetails) {
-        return tService.updateRate(tip_id, newTipsDetails);
+      public TipsEntity updateTips(@RequestParam("tip_id") int tip_id, @RequestBody TipsEntity newTipsDetails) {
+        return tService.updateTips(tip_id, newTipsDetails);
     }
 
-    @DeleteMapping("/deleteTips/{tips_id}")
-    public String deleteTips(@PathVariable int tip_id) {
-        return tService.deleteTips(tip_id);
+
+        @DeleteMapping("/deleteTips/{tips_id}")
+        public ResponseEntity<String> deleteTips(@PathVariable int tips_id) {
+        try {
+            // Assuming tService.deleteTips(tip_id) returns a string response
+            String result = tService.deleteTips(tips_id);
+            return ResponseEntity.ok(result);
+        } catch (Exception e) {
+            e.printStackTrace(); // Log the exception for debugging purposes
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error occurred during tip deletion.");
+        }
+
     }
 }

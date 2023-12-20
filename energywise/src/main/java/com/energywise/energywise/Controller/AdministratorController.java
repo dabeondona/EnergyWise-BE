@@ -44,7 +44,7 @@ public class AdministratorController {
     }
 
     @PostMapping("/insertAdmin")
-    public ResponseEntity<?> insertAdmin(@RequestBody UserRegistrationDto registrationDto) {
+    public ResponseEntity<?> insertAdmin(@RequestBody AdminRegistrationDto registrationDto) {
         AdministratorEntity admin = new AdministratorEntity();
         admin.setUsername(registrationDto.getUsername());
         admin.setPassword(registrationDto.getPassword());

@@ -1,12 +1,15 @@
 package com.energywise.energywise.Service;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.energywise.energywise.Entity.UserEntity;
 import com.energywise.energywise.Repository.UserRepository;
@@ -47,36 +50,85 @@ public class UserService {
         return userRepo.findAll();
     }
 
-    // R - GETTING PICTURE LINK
-    public String getPicture(int user_id) {
-        Optional<UserEntity> userOptional = userRepo.findById(user_id);
+    // Updating Password
+    public boolean updatePassword(Integer userId, String newPassword) {
+        UserEntity user = userRepo.findById(userId).orElse(null);
+        if (user == null) {
+            throw new UsernameNotFoundException("User not found");
+        }
 
-        if (userOptional.isPresent()) {
-            return userOptional.get().getPicture();
-        } else {
-            throw new NoSuchElementException("User " + user_id + " not found!");
+        if (passwordEncoder.matches(newPassword, user.getPassword())) {
+            return false;
+        }
+
+        user.setPassword(passwordEncoder.encode(newPassword));
+        userRepo.save(user);
+
+        return true;
+    }
+
+    public byte[] getUserPicture(Integer userId) {
+        return userRepo.findById(userId)
+                .map(UserEntity::getPicture)
+                .orElseThrow(() -> new IllegalStateException("User with ID " + userId + " not found"));
+    }
+
+    // Updating Picture
+    public boolean updatePicture(String username, MultipartFile picture) {
+        try {
+            UserEntity user = userRepo.findByUsername(username);
+            if (user == null) {
+                throw new IllegalStateException("User not found");
+            }
+
+            byte[] pictureB = picture.getBytes();
+
+            user.setPicture(pictureB);
+
+            userRepo.save(user);
+            return true;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
         }
     }
 
     // U - TO BE UTILIZED FOR THE SETTINGS PAGE
-    @SuppressWarnings("finally")
     public UserEntity updateUser(int user_id, UserEntity newUserDetails) {
-        UserEntity user = new UserEntity();
+        Optional<UserEntity> userOptional = userRepo.findById(user_id);
 
-        try {
-            user = userRepo.findById(user_id).get();
-            user.setUsername(newUserDetails.getUsername());
-            user.setFirstname(newUserDetails.getFirstname());
-            user.setLastname(newUserDetails.getLastname());
-            user.setPassword(newUserDetails.getPassword());
-            user.setEmail(newUserDetails.getEmail());
-            user.setPicture(newUserDetails.getPicture());
-            user.setDeleted(newUserDetails.isDeleted());
-        } catch (NoSuchElementException e) {
+        if (!userOptional.isPresent()) {
             throw new NoSuchElementException("User " + user_id + " not found!");
-        } finally {
-            return userRepo.save(user);
         }
+
+        UserEntity user = userOptional.get();
+
+        if (newUserDetails.getPassword() != null && !newUserDetails.getPassword().isEmpty()) {
+            String encodedPassword = passwordEncoder.encode(newUserDetails.getPassword());
+            user.setPassword(encodedPassword);
+        }
+
+        if (newUserDetails.getUsername() != null && !newUserDetails.getUsername().isEmpty()) {
+            user.setUsername(newUserDetails.getUsername());
+        }
+
+        if (newUserDetails.getFirstname() != null && !newUserDetails.getFirstname().isEmpty()) {
+            user.setFirstname(newUserDetails.getFirstname());
+        }
+
+        if (newUserDetails.getLastname() != null && !newUserDetails.getLastname().isEmpty()) {
+            user.setLastname(newUserDetails.getLastname());
+        }
+
+        if (newUserDetails.getEmail() != null && !newUserDetails.getEmail().isEmpty()) {
+            user.setEmail(newUserDetails.getEmail());
+        }
+
+        if (newUserDetails.isDeleted() != user.isDeleted()) {
+            user.setDeleted(newUserDetails.isDeleted());
+        }
+
+        return userRepo.save(user);
     }
 
     // D
