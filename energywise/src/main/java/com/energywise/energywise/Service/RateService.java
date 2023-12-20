@@ -32,8 +32,10 @@ public class RateService {
 
         try {
             rate = rRepo.findById(rate_id).get();
-            rate.setDate(newRateDetails.getDate());
+            rate.setMonth(newRateDetails.getMonth());
             rate.setPrice(newRateDetails.getPrice());
+            rate.setPrevious_month(newRateDetails.getPrevious_month());
+            rate.setPrevious_price(newRateDetails.getPrevious_price());
             rate.setPrice_luzon(newRateDetails.getPrice_luzon());
             rate.setPrice_mindanao(newRateDetails.getPrice_mindanao());
             rate.setDeleted(newRateDetails.isDeleted());

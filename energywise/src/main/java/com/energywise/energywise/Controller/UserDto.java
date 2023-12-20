@@ -4,10 +4,19 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 
 @CrossOrigin(origins = "http://localhost:3000")
 public class UserDto {
+    private Integer id;
     private String username;
     private String email;
     private String firstName;
     private String lastName;
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
 
     public String getUsername() {
         return username;
@@ -40,5 +49,4 @@ public class UserDto {
     public void setLastName(String lastName) {
         this.lastName = lastName;
     }
-
 }

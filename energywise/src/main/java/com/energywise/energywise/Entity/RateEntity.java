@@ -1,11 +1,9 @@
 package com.energywise.energywise.Entity;
 
-import java.sql.Date;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GenerationType;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
@@ -18,11 +16,17 @@ public class RateEntity {
     @Column(name = "id")
     private int id;
 
-    @Column(name = "date")
-    private Date date;
+    @Column(name = "month")
+    private String month;
 
     @Column(name = "price")
     private float price;
+
+    @Column(name = "previous_month")
+    private String previous_month;
+
+    @Column(name = "previous_price")
+    private String previous_price;
 
     @Column(name = "price_luzon")
     private float price_luzon;
@@ -37,10 +41,13 @@ public class RateEntity {
         super();
     }
 
-    public RateEntity(int id, Date date, float price, float price_luzon, float price_mindanao, boolean isDeleted) {
+    public RateEntity(int id, String month, float price, String previous_month, String previous_price,
+            float price_luzon, float price_mindanao, boolean isDeleted) {
         this.id = id;
-        this.date = date;
+        this.month = month;
         this.price = price;
+        this.previous_month = previous_month;
+        this.previous_price = previous_price;
         this.price_luzon = price_luzon;
         this.price_mindanao = price_mindanao;
         this.isDeleted = isDeleted;
@@ -54,12 +61,12 @@ public class RateEntity {
         this.id = id;
     }
 
-    public Date getDate() {
-        return date;
+    public String getMonth() {
+        return month;
     }
 
-    public void setDate(Date date) {
-        this.date = date;
+    public void setMonth(String month) {
+        this.month = month;
     }
 
     public float getPrice() {
@@ -68,6 +75,22 @@ public class RateEntity {
 
     public void setPrice(float price) {
         this.price = price;
+    }
+
+    public String getPrevious_month() {
+        return previous_month;
+    }
+
+    public void setPrevious_month(String previous_month) {
+        this.previous_month = previous_month;
+    }
+
+    public String getPrevious_price() {
+        return previous_price;
+    }
+
+    public void setPrevious_price(String previous_price) {
+        this.previous_price = previous_price;
     }
 
     public float getPrice_luzon() {
